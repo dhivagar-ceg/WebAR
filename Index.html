@@ -15,7 +15,7 @@
     >
       <a-assets>
         <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
-       <a-asset-item id="avatarModel" src="https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models@master/2.0/CesiumMan/glTF-Binary/CesiumMan.glb"></a-asset-item>
+       <a-asset-item id="avatarModel" src=" ./assets/Woman.gltf"></a-asset-item>
 
         <video
           id="sampleVideo"
@@ -50,7 +50,7 @@
         <a-gltf-model
   id="avatar"
   src="#avatarModel"
-  position="0 0 0.1"  <!-- ✅ Now it stands on the card -->
+  position="0 0 0.1"  
   scale="0.5 0.5 0.5"
   animation__walk="property: position; to: -0.7 0 0.05; dur: 2000; delay: 2000; easing: easeInOutQuad"
 ></a-gltf-model>
