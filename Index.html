@@ -15,7 +15,8 @@
     >
       <a-assets>
         <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
-       <a-asset-item id="avatarModel" src="https://cdn.jsdelivr.net/gh/dhiva/webar-businesscard/models/avatar01.glb"></a-asset-item>
+       <a-asset-item id="avatarModel" src="https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models@master/2.0/CesiumMan/glTF-Binary/CesiumMan.glb"></a-asset-item>
+
         <video
           id="sampleVideo"
           autoplay
@@ -42,7 +43,7 @@
           position="-0.7 0 0.05"
           width="0.6"
           height="0.35"
-          rotation="0 0 90"
+          rotation="0 0 0"
         ></a-video>
 
         <!-- Avatar spawns at top and walks to video -->
@@ -50,7 +51,7 @@
           id="avatar"
           src="#avatarModel"
           position="0 0.3 0.1"
-          scale="0.005 0.005 0.005"
+          scale="0.5 0.5 0.5"
           animation__walk="property: position; to: -0.7 0 0.05; dur: 2000; delay: 2000; easing: easeInOutQuad"
         ></a-gltf-model>
 
