@@ -15,7 +15,12 @@
     >
       <a-assets>
         <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
-       <a-asset-item id="avatarModel"  src="https://cdn.jsdelivr.net/gh/dhiva/webar-businesscard/assets/Woman.gltf"></a-asset-item>
+
+        <!-- ✅ Use avatar.glb instead of Woman.gltf -->
+        <a-asset-item
+          id="avatarModel"
+          src="https://cdn.jsdelivr.net/gh/dhivagar-ceg/WebAR/assets/avatar.glb"
+        ></a-asset-item>
 
         <video
           id="sampleVideo"
@@ -26,18 +31,33 @@
           webkit-playsinline
           crossorigin="anonymous"
         >
-          <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
+          <source
+            src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+            type="video/mp4"
+          />
         </video>
       </a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-camera position="0 0 0" look-controls="enabled: false">
+        <!-- 🟢 Debug text in front of the camera -->
+        <a-entity
+          id="statusText"
+          position="0 0 -1"
+          text="value: Loading model...; align: center; color: yellow; width: 2"
+        ></a-entity>
+      </a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
+        <!-- Background card -->
+        <a-plane
+          src="#card"
+          position="0 0 0"
+          height="0.552"
+          width="1"
+          rotation="0 0 0"
+        ></a-plane>
 
-        <!-- Optional card background -->
-        <a-plane src="#card" position="0 0 0" height="0.552" width="1" rotation="0 0 0"></a-plane>
-
-        <!-- Video on the left -->
+        <!-- Left-side video -->
         <a-video
           src="#sampleVideo"
           position="-0.7 0 0.05"
@@ -46,31 +66,46 @@
           rotation="0 0 0"
         ></a-video>
 
-        <!-- Avatar spawns at top and walks to video -->
+        <!-- Avatar model -->
         <a-gltf-model
-  id="avatar"
-  src="#avatarModel"
-  position="0 0 0.1"  
-  scale="0.5 0.5 0.5"
-  animation__walk="property: position; to: -0.7 0 0.05; dur: 2000; delay: 2000; easing: easeInOutQuad"
-></a-gltf-model>
-
-
+          id="avatar"
+          src="#avatarModel"
+          position="0 0 0.1"
+          scale="0.5 0.5 0.5"
+          animation__walk="property: position; to: -0.7 0 0.05; dur: 2000; delay: 2000; easing: easeInOutQuad"
+        ></a-gltf-model>
       </a-entity>
     </a-scene>
 
     <script>
-      // Start video playback on load
+      // Video autoplay fallback
       window.addEventListener("DOMContentLoaded", () => {
         const video = document.querySelector("#sampleVideo");
         video.play().catch((err) => {
           console.warn("Autoplay blocked:", err);
         });
       });
+
+      // Show model load status
+      const avatarModel = document.querySelector("#avatarModel");
+      const statusText = document.querySelector("#statusText");
+
+      avatarModel.addEventListener("loaded", () => {
+        console.log("✅ Avatar model loaded.");
+        statusText.setAttribute("text", "value: Model loaded!; color: green");
+        // Hide message after 2 sec
+        setTimeout(() => {
+          statusText.setAttribute("visible", false);
+        }, 2000);
+      });
+
+      avatarModel.addEventListener("error", () => {
+        console.error("❌ Failed to load avatar model.");
+        statusText.setAttribute("text", "value: Failed to load model.; color: red");
+      });
     </script>
   </body>
 </html>
-
 
 
 
