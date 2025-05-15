@@ -15,19 +15,16 @@
       loading-screen="enabled: false"
     >
       <a-assets>
-        <!-- Card image -->
         <img
           id="card"
           src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png"
         />
 
-        <!-- ✅ Working GLB from your GitHub -->
         <a-asset-item
           id="avatarModel"
           src="https://cdn.jsdelivr.net/gh/dhivagar-ceg/WebAR/assets/avatar.glb"
         ></a-asset-item>
 
-        <!-- Sample video -->
         <video
           id="sampleVideo"
           autoplay
@@ -44,35 +41,30 @@
         </video>
       </a-assets>
 
-      <!-- ✅ Debug status text visible in camera view -->
+      <!-- Camera with debug text in view -->
       <a-camera position="0 0 0" look-controls="enabled: false">
         <a-entity
-          id="statusText"
-          position="0 0 -1"
-          text="value: Loading model...; align: center; color: yellow; width: 2"
+          id="debugText"
+          position="0 0 -1.5"
+          text="value: Initializing...; align: center; width: 2; color: yellow"
         ></a-entity>
       </a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <!-- Marker image plane -->
         <a-plane
           src="#card"
           position="0 0 0"
           height="0.552"
           width="1"
-          rotation="0 0 0"
         ></a-plane>
 
-        <!-- Video on left -->
         <a-video
           src="#sampleVideo"
           position="-0.7 0 0.05"
           width="0.6"
           height="0.35"
-          rotation="0 0 0"
         ></a-video>
 
-        <!-- Avatar model -->
         <a-gltf-model
           id="avatar"
           src="#avatarModel"
@@ -85,32 +77,34 @@
 
     <script>
       window.addEventListener("DOMContentLoaded", () => {
-        // Autoplay fallback
         const video = document.querySelector("#sampleVideo");
         video.play().catch((err) => {
           console.warn("Video autoplay blocked:", err);
         });
 
-        // Debug text reference
-        const statusText = document.querySelector("#statusText");
+        const debugText = document.querySelector("#debugText");
+        debugText.setAttribute("text", "value: Waiting for scene to load...");
 
-        // Wait until the full scene is ready
+        // Wait until A-Frame and assets are ready
         document.querySelector("a-scene").addEventListener("loaded", () => {
-          console.log("✅ Scene loaded.");
+          debugText.setAttribute("text", "value: Scene loaded. Checking model...");
 
-          const avatar = document.querySelector("#avatar");
-          avatar.addEventListener("model-loaded", () => {
-            console.log("✅ Avatar model loaded.");
-            statusText.setAttribute("text", "value: Model loaded!; color: green");
-            setTimeout(() => {
-              statusText.setAttribute("visible", false);
-            }, 2000);
-          });
+          // Wait 3 seconds then manually check model presence
+          setTimeout(() => {
+            const avatar = document.querySelector("#avatar");
+            const mesh = avatar?.getObject3D("mesh");
 
-          avatar.addEventListener("error", () => {
-            console.error("❌ Avatar model failed to load.");
-            statusText.setAttribute("text", "value: Failed to load model.; color: red");
-          });
+            if (mesh) {
+              console.log("✅ Avatar model loaded successfully.");
+              debugText.setAttribute("text", "value: ✅ Avatar loaded!; color: green");
+              setTimeout(() => {
+                debugText.setAttribute("visible", false);
+              }, 3000);
+            } else {
+              console.warn("❌ Avatar model failed to load.");
+              debugText.setAttribute("text", "value: ❌ Avatar failed to load.; color: red");
+            }
+          }, 3000);
         });
       });
     </script>
