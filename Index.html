@@ -12,13 +12,10 @@
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
       embedded
-      debug
     >
       <a-assets>
         <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
-
-        <!-- ✅ Corrected avatar.glb path from your GitHub repo -->
-        <a-asset-item id="avatarModel" src="https://cdn.jsdelivr.net/gh/dhivagar-ceg/WebAR/assets/avatar.glb"></a-asset-item>
+       <a-asset-item id="avatarModel"  src="https://cdn.jsdelivr.net/gh/dhiva/webar-businesscard/assets/Woman.gltf"></a-asset-item>
 
         <video
           id="sampleVideo"
@@ -36,50 +33,44 @@
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-plane src="#card" position="0 0 0" height="0.552" width="1"></a-plane>
 
-        <!-- 🎥 Rotated video at left -->
+        <!-- Optional card background -->
+        <a-plane src="#card" position="0 0 0" height="0.552" width="1" rotation="0 0 0"></a-plane>
+
+        <!-- Video on the left -->
         <a-video
           src="#sampleVideo"
           position="-0.7 0 0.05"
-          width="0.35"
-          height="0.6"
-          rotation="0 0 90"
+          width="0.6"
+          height="0.35"
+          rotation="0 0 0"
         ></a-video>
 
-        <!-- 🧍 Avatar spawns in center and walks to video -->
+        <!-- Avatar spawns at top and walks to video -->
         <a-gltf-model
-          id="avatar"
-          src="#avatarModel"
-          position="0 0 0.1"
-          scale="0.5 0.5 0.5"
-          animation__walk="property: position; to: -0.7 0 0.05; dur: 2000; delay: 2000; easing: easeInOutQuad"
-        ></a-gltf-model>
+  id="avatar"
+  src="#avatarModel"
+  position="0 0 0.1"  
+  scale="0.5 0.5 0.5"
+  animation__walk="property: position; to: -0.7 0 0.05; dur: 2000; delay: 2000; easing: easeInOutQuad"
+></a-gltf-model>
+
+
       </a-entity>
     </a-scene>
 
     <script>
-      // 🎬 Video autoplay fallback with debug
+      // Start video playback on load
       window.addEventListener("DOMContentLoaded", () => {
         const video = document.querySelector("#sampleVideo");
-        video.play().then(() => {
-          console.log("✅ Video started");
-        }).catch((err) => {
-          console.warn("❌ Video autoplay blocked:", err);
+        video.play().catch((err) => {
+          console.warn("Autoplay blocked:", err);
         });
-      });
-
-      // 🐞 Debug asset loading
-      document.querySelector('#avatarModel').addEventListener('loaded', () => {
-        console.log("✅ Avatar model loaded successfully.");
-      });
-
-      document.querySelector('#avatarModel').addEventListener('error', () => {
-        console.error("❌ Avatar model failed to load.");
       });
     </script>
   </body>
 </html>
+
 
 
 
