@@ -12,16 +12,22 @@
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
       embedded
+      loading-screen="enabled: false"
     >
       <a-assets>
-        <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
+        <!-- Card image -->
+        <img
+          id="card"
+          src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png"
+        />
 
-        <!-- ✅ Use avatar.glb instead of Woman.gltf -->
+        <!-- ✅ Working GLB from your GitHub -->
         <a-asset-item
           id="avatarModel"
           src="https://cdn.jsdelivr.net/gh/dhivagar-ceg/WebAR/assets/avatar.glb"
         ></a-asset-item>
 
+        <!-- Sample video -->
         <video
           id="sampleVideo"
           autoplay
@@ -38,8 +44,8 @@
         </video>
       </a-assets>
 
+      <!-- ✅ Debug status text visible in camera view -->
       <a-camera position="0 0 0" look-controls="enabled: false">
-        <!-- 🟢 Debug text in front of the camera -->
         <a-entity
           id="statusText"
           position="0 0 -1"
@@ -48,7 +54,7 @@
       </a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <!-- Background card -->
+        <!-- Marker image plane -->
         <a-plane
           src="#card"
           position="0 0 0"
@@ -57,7 +63,7 @@
           rotation="0 0 0"
         ></a-plane>
 
-        <!-- Left-side video -->
+        <!-- Video on left -->
         <a-video
           src="#sampleVideo"
           position="-0.7 0 0.05"
@@ -78,30 +84,34 @@
     </a-scene>
 
     <script>
-      // Video autoplay fallback
       window.addEventListener("DOMContentLoaded", () => {
+        // Autoplay fallback
         const video = document.querySelector("#sampleVideo");
         video.play().catch((err) => {
-          console.warn("Autoplay blocked:", err);
+          console.warn("Video autoplay blocked:", err);
         });
-      });
 
-      // Show model load status
-      const avatarModel = document.querySelector("#avatarModel");
-      const statusText = document.querySelector("#statusText");
+        // Debug text reference
+        const statusText = document.querySelector("#statusText");
 
-      avatarModel.addEventListener("loaded", () => {
-        console.log("✅ Avatar model loaded.");
-        statusText.setAttribute("text", "value: Model loaded!; color: green");
-        // Hide message after 2 sec
-        setTimeout(() => {
-          statusText.setAttribute("visible", false);
-        }, 2000);
-      });
+        // Wait until the full scene is ready
+        document.querySelector("a-scene").addEventListener("loaded", () => {
+          console.log("✅ Scene loaded.");
 
-      avatarModel.addEventListener("error", () => {
-        console.error("❌ Failed to load avatar model.");
-        statusText.setAttribute("text", "value: Failed to load model.; color: red");
+          const avatar = document.querySelector("#avatar");
+          avatar.addEventListener("model-loaded", () => {
+            console.log("✅ Avatar model loaded.");
+            statusText.setAttribute("text", "value: Model loaded!; color: green");
+            setTimeout(() => {
+              statusText.setAttribute("visible", false);
+            }, 2000);
+          });
+
+          avatar.addEventListener("error", () => {
+            console.error("❌ Avatar model failed to load.");
+            statusText.setAttribute("text", "value: Failed to load model.; color: red");
+          });
+        });
       });
     </script>
   </body>
