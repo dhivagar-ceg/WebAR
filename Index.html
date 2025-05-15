@@ -1,9 +1,12 @@
 <html>
   <head>
+    <meta charset="utf-8" />
+    <title>WebAR Avatar Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   </head>
+
   <body>
     <a-scene
       mindar-image="imageTargetSrc: ./assets/NextXRCard.mind"
@@ -15,15 +18,7 @@
       loading-screen="enabled: false"
     >
       <a-assets>
-        <img
-          id="card"
-          src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png"
-        />
-
-        <a-asset-item
-          id="avatarModel"
-          src="https://cdn.jsdelivr.net/gh/dhivagar-ceg/WebAR/assets/avatar.glb"
-        ></a-asset-item>
+        <a-asset-item id="avatarModel" src="./assets/avatar.glb"></a-asset-item>
 
         <video
           id="sampleVideo"
@@ -41,7 +36,6 @@
         </video>
       </a-assets>
 
-      <!-- Camera with debug text in view -->
       <a-camera position="0 0 0" look-controls="enabled: false">
         <a-entity
           id="debugText"
@@ -52,9 +46,9 @@
 
       <a-entity mindar-image-target="targetIndex: 0">
         <a-plane
-          src="#card"
+          color="white"
           position="0 0 0"
-          height="0.552"
+          height="0.55"
           width="1"
         ></a-plane>
 
@@ -70,42 +64,31 @@
           src="#avatarModel"
           position="0 0 0.1"
           scale="0.5 0.5 0.5"
-          animation__walk="property: position; to: -0.7 0 0.05; dur: 2000; delay: 2000; easing: easeInOutQuad"
+          animation__walk="property: position; to: -0.7 0 0.05; dur: 2000; delay: 2000"
         ></a-gltf-model>
       </a-entity>
     </a-scene>
 
     <script>
       window.addEventListener("DOMContentLoaded", () => {
-        const video = document.querySelector("#sampleVideo");
-        video.play().catch((err) => {
-          console.warn("Video autoplay blocked:", err);
-        });
-
         const debugText = document.querySelector("#debugText");
-        debugText.setAttribute("text", "value: Waiting for scene to load...");
+        debugText.setAttribute("text", "value: Scene loaded. Waiting for avatar...");
 
-        // Wait until A-Frame and assets are ready
-        document.querySelector("a-scene").addEventListener("loaded", () => {
-          debugText.setAttribute("text", "value: Scene loaded. Checking model...");
+        const avatar = document.querySelector("#avatar");
 
-          // Wait 3 seconds then manually check model presence
-          setTimeout(() => {
-            const avatar = document.querySelector("#avatar");
-            const mesh = avatar?.getObject3D("mesh");
-
-            if (mesh) {
-              console.log("✅ Avatar model loaded successfully.");
-              debugText.setAttribute("text", "value: ✅ Avatar loaded!; color: green");
-              setTimeout(() => {
-                debugText.setAttribute("visible", false);
-              }, 3000);
-            } else {
-              console.warn("❌ Avatar model failed to load.");
-              debugText.setAttribute("text", "value: ❌ Avatar failed to load.; color: red");
-            }
-          }, 3000);
-        });
+        setTimeout(() => {
+          const mesh = avatar.getObject3D("mesh");
+          if (mesh) {
+            console.log("✅ Avatar loaded.");
+            debugText.setAttribute("text", "value: ✅ Avatar loaded!; color: green");
+            setTimeout(() => {
+              debugText.setAttribute("visible", false);
+            }, 3000);
+          } else {
+            console.warn("❌ Avatar failed to load.");
+            debugText.setAttribute("text", "value: ❌ Avatar failed to load.; color: red");
+          }
+        }, 3000);
       });
     </script>
   </body>
