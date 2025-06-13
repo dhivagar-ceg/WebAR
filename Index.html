@@ -1,141 +1,62 @@
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>WebAR Avatar Test</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <title>MindAR + GitHub Pages</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body, html {
+        margin: 0;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
   </head>
-
   <body>
-    <a-scene
-      mindar-image="imageTargetSrc: ./assets/NextXRCard.mind"
-      color-space="sRGB"
-      renderer="colorManagement: true, physicallyCorrectLights"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: false"
-      embedded
-      loading-screen="enabled: false"
-    >
-      <a-assets>
-        <a-asset-item id="avatarModel" src="https://cdn.jsdelivr.net/gh/dhivagar-ceg/WebAR/assets/avatar.glb"></a-asset-item>
+    <script type="module">
+      import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.module.js";
+      import { MindARThree } from "./mindar-image-three.module.js"; // self-hosted
 
+      const start = async () => {
+        const mindarThree = new MindARThree({
+          container: document.body,
+          imageTargetSrc: "./assets/marker.mind",
+        });
 
-        <video
-          id="sampleVideo"
-          autoplay
-          loop
-          muted
-          playsinline
-          webkit-playsinline
-          crossorigin="anonymous"
-        >
-          <source
-            src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
-            type="video/mp4"
-          />
-        </video>
-      </a-assets>
+        const { renderer, scene, camera } = mindarThree;
 
-      <a-camera position="0 0 0" look-controls="enabled: false">
-        <a-entity
-          id="debugText"
-          position="0 0 -1.5"
-          text="value: Initializing...; align: center; width: 2; color: yellow"
-        ></a-entity>
-      </a-camera>
+        const anchor = mindarThree.addAnchor(0);
+        const geometry = new THREE.PlaneGeometry(1, 0.5625);
 
-      <a-entity mindar-image-target="targetIndex: 0">
-        <a-plane
-          color="white"
-          position="0 0 0"
-          height="0.55"
-          width="1"
-        ></a-plane>
+        const video = document.createElement("video");
+        video.src = "./assets/video.mp4";
+        video.crossOrigin = "anonymous";
+        video.loop = true;
+        video.muted = true;
+        video.setAttribute("playsinline", "");
+        await video.play();
 
-        <a-video
-          src="#sampleVideo"
-          position="-0.7 0 0.05"
-          width="0.6"
-          height="0.35"
-        ></a-video>
+        const texture = new THREE.VideoTexture(video);
+        const material = new THREE.MeshBasicMaterial({ map: texture });
+        const plane = new THREE.Mesh(geometry, material);
+        anchor.group.add(plane);
 
-        <a-gltf-model
-          id="avatar"
-          src="#avatarModel"
-          position="0 0 0.1"
-          scale="0.5 0.5 0.5"
-          animation__walk="property: position; to: -0.7 0 0.05; dur: 2000; delay: 2000"
-        ></a-gltf-model>
-      </a-entity>
-    </a-scene>
+        anchor.onTargetFound = () => {
+          video.play();
+        };
 
-    <script>
-      window.addEventListener("DOMContentLoaded", () => {
-        const debugText = document.querySelector("#debugText");
-        debugText.setAttribute("text", "value: Scene loaded. Waiting for avatar...");
+        anchor.onTargetLost = () => {
+          video.pause();
+        };
 
-        const avatar = document.querySelector("#avatar");
+        await mindarThree.start();
+        renderer.setAnimationLoop(() => {
+          renderer.render(scene, camera);
+        });
+      };
 
-        setTimeout(() => {
-          const mesh = avatar.getObject3D("mesh");
-          if (mesh) {
-            console.log("✅ Avatar loaded.");
-            debugText.setAttribute("text", "value: ✅ Avatar loaded!; color: green");
-            setTimeout(() => {
-              debugText.setAttribute("visible", false);
-            }, 3000);
-          } else {
-            console.warn("❌ Avatar failed to load.");
-            debugText.setAttribute("text", "value: ❌ Avatar failed to load.; color: red");
-          }
-        }, 3000);
-      });
+      start();
     </script>
   </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 
-<html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-  </head>
-  <body>
-    <a-scene mindar-image="imageTargetSrc: ./assets/NextXRCard.mind" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-      <a-assets>
-	<img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
-	<a-asset-item id="avatarModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/softmind/scene.gltf"></a-asset-item>
-      </a-assets>
-
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-      <a-entity mindar-image-target="targetIndex: 0">
-        <a-plane src="#card" position="0 0 0" height="0.552" width="1" rotation="0 0 0"></a-plane>
-        <a-gltf-model rotation="0 0 0 " position="0 0 0.1" scale="0.005 0.005 0.005" src="#avatarModel"
-          animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate"
-        >
-      </a-entity>
-    </a-scene>
-  </body>
-</html> -->
