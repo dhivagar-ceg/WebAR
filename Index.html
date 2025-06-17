@@ -5,9 +5,15 @@
     <title>WebAR Business Card</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- ✅ MindAR (includes its own THREE namespace) -->
+    <!-- ✅ Load MindAR (includes internal THREE) -->
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
-    <!-- ✅ GLTFLoader using MindAR's Three -->
+
+    <!-- ✅ Expose internal THREE to global scope -->
+    <script>
+      window.THREE = window.MINDAR.IMAGE.THREE;
+    </script>
+
+    <!-- ✅ Now load GLTFLoader that depends on global THREE -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <style>
@@ -22,14 +28,14 @@
       window.addEventListener("DOMContentLoaded", async () => {
         const mindarThree = new window.MINDAR.IMAGE.MindARThree({
           container: document.body,
-          imageTargetSrc: "./assets/targets.mind",
-          maxTrack: 1,
+          imageTargetSrc: "./assets/targets.mind", // your marker file
         });
 
         const { renderer, scene, camera } = mindarThree;
         const anchor = mindarThree.addAnchor(0);
 
-        const loader = new THREE.GLTFLoader(); // works because MindAR's version of THREE is global
+        // ✅ Load and place your avatar model
+        const loader = new THREE.GLTFLoader();
         loader.load("./assets/avatar.glb", (gltf) => {
           const model = gltf.scene;
           model.scale.set(0.5, 0.5, 0.5);
