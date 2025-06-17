@@ -9,5 +9,10 @@
   "dependencies": {
     "mind-ar": "^1.1.5",
     "three": "^0.152.2"
-  }
+  },
+  "main": "main.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
