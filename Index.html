@@ -1,11 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World 123</title>
-</head>
-<body>
-    <h1>Hello, World 12345 23</h1>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebAR Business Card</title>
+
+    <!-- MindAR + Three.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-three.prod.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.150.1/examples/jsm/loaders/GLTFLoader.js';
+      import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.module.js';
+
+      const start = async () => {
+        const mindarThree = new window.MINDAR.IMAGE.MindARThree({
+          container: document.body,
+          imageTargetSrc: './assets/targets.mind',
+        });
+
+        const { renderer, scene, camera } = mindarThree;
+
+        const anchor = mindarThree.addAnchor(0); // index 0 - first image in .mind file
+
+        // Load Avatar
+        const loader = new GLTFLoader();
+        loader.load('./assets/avatar.glb', (gltf) => {
+          const model = gltf.scene;
+          model.scale.set(0.5, 0.5, 0.5);
+          model.position.set(0, 0, 0); // on top of target
+          anchor.group.add(model);
+        });
+
+        await mindarThree.start();
+        renderer.setAnimationLoop(() => {
+          renderer.render(scene, camera);
+        });
+      };
+
+      start();
+    </script>
+  </body>
 </html>
