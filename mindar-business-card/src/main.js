@@ -1,20 +1,21 @@
-import { MindARThree } from 'mind-ar/dist/mindar-image-three.prod.js';
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 const start = async () => {
-  const mindarThree = new MindARThree({
+  const mindarThree = new window.MINDAR.IMAGE.MindARThree({
     container: document.body,
-    imageTargetSrc: '/targets.mind',
+    imageTargetSrc: './assets/target.mind',
   });
 
   const { renderer, scene, camera } = mindarThree;
+
   const anchor = mindarThree.addAnchor(0);
 
   const loader = new GLTFLoader();
-  loader.load('/src/avatar.glb', (gltf) => {
+  loader.load('./assets/avatar.glb', (gltf) => {
     const model = gltf.scene;
-    model.scale.set(0.5, 0.5, 0.5);
+    model.scale.set(0.2, 0.2, 0.2);
+    model.position.set(0, 0, 0);
     anchor.group.add(model);
   });
 
