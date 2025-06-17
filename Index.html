@@ -2,50 +2,45 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WebAR Business Card</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- ✅ ONLY MindAR — includes Three.js and GLTFLoader internally -->
+    <!-- ✅ MindAR (includes its own THREE namespace) -->
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
+    <!-- ✅ GLTFLoader using MindAR's Three -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/loaders/GLTFLoader.js"></script>
 
     <style>
       body {
         margin: 0;
         overflow: hidden;
       }
-      canvas {
-        display: block;
-      }
     </style>
   </head>
   <body>
     <script>
-      window.addEventListener("DOMContentLoaded", () => {
-        const start = async () => {
-          const mindarThree = new window.MINDAR.IMAGE.MindARThree({
-            container: document.body,
-            imageTargetSrc: "./assets/targets.mind",
-          });
+      window.addEventListener("DOMContentLoaded", async () => {
+        const mindarThree = new window.MINDAR.IMAGE.MindARThree({
+          container: document.body,
+          imageTargetSrc: "./assets/targets.mind",
+          maxTrack: 1,
+        });
 
-          const { renderer, scene, camera } = mindarThree;
-          const anchor = mindarThree.addAnchor(0);
+        const { renderer, scene, camera } = mindarThree;
+        const anchor = mindarThree.addAnchor(0);
 
-          // ✅ Use GLTFLoader from internal Three.js (bundled)
-          const loader = new window.THREE.GLTFLoader();
-          loader.load("./assets/avatar.glb", (gltf) => {
-            const model = gltf.scene;
-            model.scale.set(0.5, 0.5, 0.5);
-            model.position.set(0, 0, 0);
-            anchor.group.add(model);
-          });
+        const loader = new THREE.GLTFLoader(); // works because MindAR's version of THREE is global
+        loader.load("./assets/avatar.glb", (gltf) => {
+          const model = gltf.scene;
+          model.scale.set(0.5, 0.5, 0.5);
+          model.position.set(0, 0, 0);
+          anchor.group.add(model);
+        });
 
-          await mindarThree.start();
-          renderer.setAnimationLoop(() => {
-            renderer.render(scene, camera);
-          });
-        };
-
-        start();
+        await mindarThree.start();
+        renderer.setAnimationLoop(() => {
+          renderer.render(scene, camera);
+        });
       });
     </script>
   </body>
