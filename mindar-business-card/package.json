@@ -1,20 +1,13 @@
 {
   "name": "mindar-business-card",
-  "type": "module",
+  "version": "1.0.0",
   "scripts": {
-    "dev": "vite"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "three": "^0.152.2",
-    "mindar-image-three": "^1.1.5"
-  },
-  "devDependencies": {
-    "vite": "^6.3.5"
-  },
-  "version": "1.0.0",
-  "main": "vite.config.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+    "mind-ar": "^1.1.5",
+    "three": "^0.152.2"
+  }
 }

@@ -1,18 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>MindAR Business Card</title>
-  <script src="libs/mindar-image-three.prod.js"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/loaders/GLTFLoader.js"></script>
-  <style>
-    body { margin: 0; overflow: hidden; }
-    canvas { position: absolute; top: 0; left: 0; }
-  </style>
-</head>
-<body>
-  <script type="module" src="src/main.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>MindAR Image Tracking with Three.js</title>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/dist/mindar-image-three.prod.js"></script>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      #ar-container {
+        width: 100vw;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ar-container"></div>
+    <script src="./main.js" type="module"></script>
+  </body>
 </html>
