@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WebAR Business Card</title>
 
-    <!-- UMD scripts -->
+    <!-- ✅ Use UMD builds (NOT ES Modules) -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-three.prod.js"></script>
@@ -22,17 +22,18 @@
   </head>
   <body>
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
+      window.addEventListener("DOMContentLoaded", () => {
         const start = async () => {
+          // ✅ Make sure MindAR is loaded correctly
           const mindarThree = new window.MINDAR.IMAGE.MindARThree({
             container: document.body,
-            imageTargetSrc: "./assets/targets.mind",
+            imageTargetSrc: "./assets/targets.mind", // Your compiled image file
           });
 
           const { renderer, scene, camera } = mindarThree;
-
           const anchor = mindarThree.addAnchor(0);
 
+          // ✅ Load GLB Model
           const loader = new THREE.GLTFLoader();
           loader.load("./assets/avatar.glb", (gltf) => {
             const model = gltf.scene;
@@ -41,6 +42,7 @@
             anchor.group.add(model);
           });
 
+          // ✅ Start AR rendering
           await mindarThree.start();
           renderer.setAnimationLoop(() => {
             renderer.render(scene, camera);
